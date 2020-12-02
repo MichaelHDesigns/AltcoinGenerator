@@ -49,7 +49,7 @@ COIN_NAME_UPPER=$(echo $COIN_NAME | tr '[:lower:]' '[:upper:]')
 COIN_UNIT_LOWER=$(echo $COIN_UNIT | tr '[:upper:]' '[:lower:]')
 DIRNAME=$(dirname $0)
 DOCKER_NETWORK="172.18.0"
-DOCKER_IMAGE_LABEL="newcoin-env"
+DOCKER_IMAGE_LABEL="eums-env"
 OSVERSION="$(uname -s)"
 
 docker_build_image()
