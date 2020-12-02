@@ -1,5 +1,5 @@
 #!/bin/bash -e
-# This script is an experiment to clone litecoin into a 
+# This script is an experiment to clone SECURECOINNETWORK into a 
 # brand new coin + blockchain.
 # The script will perform the following steps:
 # 1) create first a docker image with ubuntu ready to build and run the new coin daemon
@@ -14,13 +14,13 @@
 # CHAIN variable below
 
 # change the following variables to match your new coin
-COIN_NAME="MyCoin"
-COIN_UNIT="MYC"
-# 42 million coins at total (litecoin total supply is 84000000)
-TOTAL_SUPPLY=42000000
-MAINNET_PORT="54321"
-TESTNET_PORT="54322"
-PHRASE="Some newspaper headline that describes something that happened today"
+COIN_NAME="SecureCloudNetwork"
+COIN_UNIT="SCN"
+# 42 million coins at total (SECURECOINNETWORK total supply is 332200000)
+TOTAL_SUPPLY=332200000
+MAINNET_PORT="87501"
+TESTNET_PORT="87505"
+PHRASE="Devilking6105 says to enjoy your day on December 1 2020"
 # First letter of the wallet address. Check https://en.bitcoin.it/wiki/Base58Check_encoding
 PUBKEY_CHAR="20"
 # number of blocks to wait to be able to spend coinbase UTXO's
@@ -28,20 +28,20 @@ COINBASE_MATURITY=100
 # leave CHAIN empty for main network, -regtest for regression network and -testnet for test network
 CHAIN="-regtest"
 # this is the amount of coins to get as a reward of mining the block of height 1. if not set this will default to 50
-#PREMINED_AMOUNT=10000
+PREMINED_AMOUNT=13000000
 
 # warning: change this to your own pubkey to get the genesis block mining reward
-GENESIS_REWARD_PUBKEY=044e0d4bc823e20e14d66396a64960c993585400c53f1e6decb273f249bfeba0e71f140ffa7316f2cdaaae574e7d72620538c3e7791ae9861dfe84dd2955fc85e8
+GENESIS_REWARD_PUBKEY=04ffff001d01042f446576696c6b696e6736313035207361797320746f20656e6a6f7920796f7572206461792044656320312032303230
 
 # dont change the following variables unless you know what you are doing
-LITECOIN_BRANCH=0.16
+SECURECOINNETWORK_BRANCH=0.16
 GENESISHZERO_REPOS=https://github.com/lhartikk/GenesisH0
-LITECOIN_REPOS=https://github.com/litecoin-project/litecoin.git
-LITECOIN_PUB_KEY=040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9
-LITECOIN_MERKLE_HASH=97ddfbbae6be97fd6cdf3e7ca13232a3afff2353e29badfab7f73011edd4ced9
-LITECOIN_MAIN_GENESIS_HASH=12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2
-LITECOIN_TEST_GENESIS_HASH=4966625a4b2851d9fdee139e56211a0d88575f59ed816ff5e6a63deb4e3e29a0
-LITECOIN_REGTEST_GENESIS_HASH=530827f38f93b43ed12af0b3ad25a288dc02ed74d6d7857862df51fc56c416f9
+SECURECOINNETWORK_REPOS=https://github.com/MichaelHDesigns/securecloudnetwork.git
+SECURECOINNETWORK_PUB_KEY=04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f
+SECURECOINNETWORK_MERKLE_HASH=77d1a7e9676ad104c79020338bcbde9bd48599d2a412cc40656007e804f3cb40
+SECURECOINNETWORK_MAIN_GENESIS_HASH=0000070503fd6d9295ba26916964bbd0e895e5473ad9c5958072ba3d70ff8ce7
+SECURECOINNETWORK_TEST_GENESIS_HASH=""
+SECURECOINNETWORK_REGTEST_GENESIS_HASH=""
 MINIMUM_CHAIN_WORK_MAIN=0x0000000000000000000000000000000000000000000000c1bfe2bbe614f41260
 MINIMUM_CHAIN_WORK_TEST=0x000000000000000000000000000000000000000000000000001df7b5aa1700ce
 COIN_NAME_LOWER=$(echo $COIN_NAME | tr '[:upper:]' '[:lower:]')
@@ -143,7 +143,7 @@ generate_genesis_block()
 
     if [ ! -f ${COIN_NAME}-main.txt ]; then
         echo "Mining genesis block... this procedure can take many hours of cpu work.."
-        docker_run_genesis "python /GenesisH0/genesis.py -a scrypt -z \"$PHRASE\" -p $GENESIS_REWARD_PUBKEY 2>&1 | tee /GenesisH0/${COIN_NAME}-main.txt"
+        docker_run_genesis "python /GenesisH0/genesis.py -a quark -z \"$PHRASE\" -p $GENESIS_REWARD_PUBKEY 2>&1 | tee /GenesisH0/${COIN_NAME}-main.txt"
     else
         echo "Genesis block already mined.."
         cat ${COIN_NAME}-main.txt
@@ -151,7 +151,7 @@ generate_genesis_block()
 
     if [ ! -f ${COIN_NAME}-test.txt ]; then
         echo "Mining genesis block of test network... this procedure can take many hours of cpu work.."
-        docker_run_genesis "python /GenesisH0/genesis.py  -t 1486949366 -a scrypt -z \"$PHRASE\" -p $GENESIS_REWARD_PUBKEY 2>&1 | tee /GenesisH0/${COIN_NAME}-test.txt"
+        docker_run_genesis "python /GenesisH0/genesis.py  -t 1486949366 -a quark -z \"$PHRASE\" -p $GENESIS_REWARD_PUBKEY 2>&1 | tee /GenesisH0/${COIN_NAME}-test.txt"
     else
         echo "Genesis block already mined.."
         cat ${COIN_NAME}-test.txt
@@ -159,7 +159,7 @@ generate_genesis_block()
 
     if [ ! -f ${COIN_NAME}-regtest.txt ]; then
         echo "Mining genesis block of regtest network... this procedure can take many hours of cpu work.."
-        docker_run_genesis "python /GenesisH0/genesis.py -t 1296688602 -b 0x207fffff -n 0 -a scrypt -z \"$PHRASE\" -p $GENESIS_REWARD_PUBKEY 2>&1 | tee /GenesisH0/${COIN_NAME}-regtest.txt"
+        docker_run_genesis "python /GenesisH0/genesis.py -t 1296688602 -b 0x207fffff -n 0 -a quark -z \"$PHRASE\" -p $GENESIS_REWARD_PUBKEY 2>&1 | tee /GenesisH0/${COIN_NAME}-regtest.txt"
     else
         echo "Genesis block already mined.."
         cat ${COIN_NAME}-regtest.txt
@@ -187,41 +187,41 @@ newcoin_replace_vars()
         echo "Warning: $COIN_NAME_LOWER already existing. Not replacing any values"
         return 0
     fi
-    if [ ! -d "litecoin-master" ]; then
-        # clone litecoin and keep local cache
-        git clone -b $LITECOIN_BRANCH $LITECOIN_REPOS litecoin-master
+    if [ ! -d "securecloudnetwork-master" ]; then
+        # clone securecloudnetwork and keep local cache
+        git clone -b $SECURECOINNETWORK_BRANCH $SECURECOINNETWORK_REPOS securecloudnetwork-master
     else
         echo "Updating master branch"
-        pushd litecoin-master
+        pushd securecloudnetwork-master
         git pull
         popd
     fi
 
-    git clone -b $LITECOIN_BRANCH litecoin-master $COIN_NAME_LOWER
+    git clone -b $SECURECOINNETWORK_BRANCH securecloudnetwork-master $COIN_NAME_LOWER
 
     pushd $COIN_NAME_LOWER
 
     # first rename all directories
-    for i in $(find . -type d | grep -v "^./.git" | grep litecoin); do 
-        git mv $i $(echo $i| $SED "s/litecoin/$COIN_NAME_LOWER/")
+    for i in $(find . -type d | grep -v "^./.git" | grep securecloudnetwork); do 
+        git mv $i $(echo $i| $SED "s/eums/$COIN_NAME_LOWER/")
     done
 
     # then rename all files
-    for i in $(find . -type f | grep -v "^./.git" | grep litecoin); do
-        git mv $i $(echo $i| $SED "s/litecoin/$COIN_NAME_LOWER/")
+    for i in $(find . -type f | grep -v "^./.git" | grep securecloudnetwork); do
+        git mv $i $(echo $i| $SED "s/eums/$COIN_NAME_LOWER/")
     done
 
-    # now replace all litecoin references to the new coin name
+    # now replace all SECURECOINNETWORK references to the new coin name
     for i in $(find . -type f | grep -v "^./.git"); do
-        $SED -i "s/Litecoin/$COIN_NAME/g" $i
-        $SED -i "s/litecoin/$COIN_NAME_LOWER/g" $i
-        $SED -i "s/LITECOIN/$COIN_NAME_UPPER/g" $i
-        $SED -i "s/LTC/$COIN_UNIT/g" $i
+        $SED -i "s/eums/$COIN_NAME/g" $i
+        $SED -i "s/eums/$COIN_NAME_LOWER/g" $i
+        $SED -i "s/eums/$COIN_NAME_UPPER/g" $i
+        $SED -i "s/EUMS/$COIN_UNIT/g" $i
     done
 
-    $SED -i "s/ltc/$COIN_UNIT_LOWER/g" src/chainparams.cpp
+    $SED -i "s/eums/$COIN_UNIT_LOWER/g" src/chainparams.cpp
 
-    $SED -i "s/84000000/$TOTAL_SUPPLY/" src/amount.h
+    $SED -i "s/332200000/$TOTAL_SUPPLY/" src/amount.h
     $SED -i "s/1,48/1,$PUBKEY_CHAR/" src/chainparams.cpp
 
     $SED -i "s/1317972665/$TIMESTAMP/" src/chainparams.cpp
@@ -231,23 +231,23 @@ newcoin_replace_vars()
     $SED -i "s/= 9333;/= $MAINNET_PORT;/" src/chainparams.cpp
     $SED -i "s/= 19335;/= $TESTNET_PORT;/" src/chainparams.cpp
 
-    $SED -i "s/$LITECOIN_PUB_KEY/$MAIN_PUB_KEY/" src/chainparams.cpp
-    $SED -i "s/$LITECOIN_MERKLE_HASH/$MERKLE_HASH/" src/chainparams.cpp
-    $SED -i "s/$LITECOIN_MERKLE_HASH/$MERKLE_HASH/" src/qt/test/rpcnestedtests.cpp
+    $SED -i "s/$SECURECOINNETWORK_PUB_KEY/$MAIN_PUB_KEY/" src/chainparams.cpp
+    $SED -i "s/$SECURECOINNETWORK_MERKLE_HASH/$MERKLE_HASH/" src/chainparams.cpp
+    $SED -i "s/$SECURECOINNETWORK_MERKLE_HASH/$MERKLE_HASH/" src/qt/test/rpcnestedtests.cpp
 
-    $SED -i "0,/$LITECOIN_MAIN_GENESIS_HASH/s//$MAIN_GENESIS_HASH/" src/chainparams.cpp
-    $SED -i "0,/$LITECOIN_TEST_GENESIS_HASH/s//$TEST_GENESIS_HASH/" src/chainparams.cpp
-    $SED -i "0,/$LITECOIN_REGTEST_GENESIS_HASH/s//$REGTEST_GENESIS_HASH/" src/chainparams.cpp
+    $SED -i "0,/$SECURECOINNETWORK_MAIN_GENESIS_HASH/s//$MAIN_GENESIS_HASH/" src/chainparams.cpp
+    $SED -i "0,/$SECURECOINNETWORK_TEST_GENESIS_HASH/s//$TEST_GENESIS_HASH/" src/chainparams.cpp
+    $SED -i "0,/$SECURECOINNETWORK_REGTEST_GENESIS_HASH/s//$REGTEST_GENESIS_HASH/" src/chainparams.cpp
 
     $SED -i "0,/2084524493/s//$MAIN_NONCE/" src/chainparams.cpp
     $SED -i "0,/293345/s//$TEST_NONCE/" src/chainparams.cpp
     $SED -i "0,/1296688602, 0/s//1296688602, $REGTEST_NONCE/" src/chainparams.cpp
     $SED -i "0,/0x1e0ffff0/s//$BITS/" src/chainparams.cpp
 
-    $SED -i "s,vSeeds.emplace_back,//vSeeds.emplace_back,g" src/chainparams.cpp
+   # $SED -i "s,vSeeds.emplace_back,//vSeeds.emplace_back,g" src/chainparams.cpp
 
     if [ -n "$PREMINED_AMOUNT" ]; then
-        $SED -i "s/CAmount nSubsidy = 50 \* COIN;/if \(nHeight == 1\) return COIN \* $PREMINED_AMOUNT;\n    CAmount nSubsidy = 50 \* COIN;/" src/validation.cpp
+        $SED -i "s/CAmount nSubsidy = 5 \* COIN;/if \(nHeight == 1\) return COIN \* $PREMINED_AMOUNT;\n    CAmount nSubsidy = 5 \* COIN;/" src/validation.cpp
     fi
 
     $SED -i "s/COINBASE_MATURITY = 100/COINBASE_MATURITY = $COINBASE_MATURITY/" src/consensus/consensus.h
