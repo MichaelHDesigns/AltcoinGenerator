@@ -49,7 +49,7 @@ COIN_NAME_UPPER=$(echo $COIN_NAME | tr '[:lower:]' '[:upper:]')
 COIN_UNIT_LOWER=$(echo $COIN_UNIT | tr '[:upper:]' '[:lower:]')
 DIRNAME=$(dirname $0)
 DOCKER_NETWORK="172.18.0"
-DOCKER_IMAGE_LABEL=""
+DOCKER_IMAGE_LABEL="securecloudnetwork-env"
 OSVERSION="$(uname -s)"
 
 docker_build_image()
@@ -105,15 +105,15 @@ docker_remove_nodes()
 docker_create_network()
 {
     echo "Creating docker network"
-    if ! docker network inspect eums &>/dev/null; then
-        docker network create --subnet=$DOCKER_NETWORK.0/16 eums
+    if ! docker network inspect securecloudnetwork &>/dev/null; then
+        docker network create --subnet=$DOCKER_NETWORK2.0/1 securecloudnetwork
     fi
 }
 
 docker_remove_network()
 {
     echo "Removing docker network"
-    docker network rm eums
+    docker network rm securecloudnetwork
 }
 
 docker_run_node()
@@ -128,7 +128,7 @@ rpcpassword=$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 32; e
 EOF
     fi
 
-    docker run --net eums --ip $DOCKER_NETWORK.${NODE_NUMBER} -v $DIRNAME/miner${NODE_NUMBER}:/root/.$COIN_NAME_LOWER -v $DIRNAME/$COIN_NAME_LOWER:/$COIN_NAME_LOWER $DOCKER_IMAGE_LABEL /bin/bash -c "$NODE_COMMAND"
+    docker run --net securecloudnetwork --ip $DOCKER_NETWORK.${NODE_NUMBER} -v $DIRNAME/miner${NODE_NUMBER}:/root/.$COIN_NAME_LOWER -v $DIRNAME/$COIN_NAME_LOWER:/$COIN_NAME_LOWER $DOCKER_IMAGE_LABEL /bin/bash -c "$NODE_COMMAND"
 }
 
 generate_genesis_block()
