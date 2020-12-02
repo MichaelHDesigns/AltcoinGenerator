@@ -105,15 +105,15 @@ docker_remove_nodes()
 docker_create_network()
 {
     echo "Creating docker network"
-    if ! docker network inspect newcoin &>/dev/null; then
-        docker network create --subnet=$DOCKER_NETWORK.0/16 newcoin
+    if ! docker network inspect eums &>/dev/null; then
+        docker network create --subnet=$DOCKER_NETWORK.0/16 eums
     fi
 }
 
 docker_remove_network()
 {
     echo "Removing docker network"
-    docker network rm newcoin
+    docker network rm eums
 }
 
 docker_run_node()
@@ -128,7 +128,7 @@ rpcpassword=$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 32; e
 EOF
     fi
 
-    docker run --net newcoin --ip $DOCKER_NETWORK.${NODE_NUMBER} -v $DIRNAME/miner${NODE_NUMBER}:/root/.$COIN_NAME_LOWER -v $DIRNAME/$COIN_NAME_LOWER:/$COIN_NAME_LOWER $DOCKER_IMAGE_LABEL /bin/bash -c "$NODE_COMMAND"
+    docker run --net eums --ip $DOCKER_NETWORK.${NODE_NUMBER} -v $DIRNAME/miner${NODE_NUMBER}:/root/.$COIN_NAME_LOWER -v $DIRNAME/$COIN_NAME_LOWER:/$COIN_NAME_LOWER $DOCKER_IMAGE_LABEL /bin/bash -c "$NODE_COMMAND"
 }
 
 generate_genesis_block()
@@ -181,7 +181,7 @@ generate_genesis_block()
     popd
 }
 
-newcoin_replace_vars()
+eums_replace_vars()
 {
     if [ -d $COIN_NAME_LOWER ]; then
         echo "Warning: $COIN_NAME_LOWER already existing. Not replacing any values"
