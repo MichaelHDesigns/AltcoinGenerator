@@ -372,7 +372,7 @@ case $1 in
         fi
         docker_build_image
         generate_genesis_block
-        newcoin_replace_vars
+        eums_replace_vars
         build_new_coin
         docker_create_network
 
